@@ -1,26 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Color Mini App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh; font-family:Arial;">
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.expand();
 
-  <button onclick="changeColor()" 
-          style="padding:20px 40px; font-size:20px; cursor:pointer; border:none; border-radius:10px;">
-    Change Background Color
-  </button>
+  async function changeColor() {
+    const response = await fetch('/api/save');
+    const data = await response.json();
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+    document.body.style.backgroundColor = randomColor;
 
-    function changeColor() {
-      const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-      document.body.style.backgroundColor = randomColor;
-    }
-  </script>
-
-</body>
-</html>
+    alert("Total clicks saved on backend: " + data.totalClicks);
+  }
+</script>
