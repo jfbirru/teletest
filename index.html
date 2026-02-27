@@ -1,1 +1,36 @@
-<h1>Test Page</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mini App Backend Test</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh; font-family:Arial;">
+
+  <button onclick="handleClick()" 
+          style="padding:20px 40px; font-size:20px; cursor:pointer; border:none; border-radius:10px;">
+    Change Color & Save Click
+  </button>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    async function handleClick() {
+      try {
+        const response = await fetch('/api/save');
+        const data = await response.json();
+
+        const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+        document.body.style.backgroundColor = randomColor;
+
+        alert("Total backend clicks: " + data.totalClicks);
+      } catch (error) {
+        alert("Error talking to backend");
+        console.error(error);
+      }
+    }
+  </script>
+
+</body>
+</html>
