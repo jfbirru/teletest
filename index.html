@@ -1,14 +1,1 @@
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.expand();
-
-  async function changeColor() {
-    const response = await fetch('/api/save');
-    const data = await response.json();
-
-    const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-    document.body.style.backgroundColor = randomColor;
-
-    alert("Total clicks saved on backend: " + data.totalClicks);
-  }
-</script>
+<h1>Test Page</h1>
