@@ -1,36 +1,135 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Mini App Backend Test</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+/* Title */
+.title {
+  position: absolute;
+  top: 5vh;
+  width: 100%;
+  text-align: center;
+  font-size: 6vw;
+  color: green;
+  font-weight: bold;
+}
+
+/* Counter */
+#counter {
+  position: absolute;
+  top: 15vh;
+  width: 100%;
+  text-align: center;
+  font-size: 10vw;
+  color: green;
+}
+
+/* Ground */
+.ground {
+  position: absolute;
+  bottom: 15vh;
+  width: 100vw;
+  height: 2vh;
+  background: black;
+}
+
+/* Player */
+.character {
+  position: absolute;
+  bottom: 17vh;
+  left: 15vw;
+  width: 12vw;
+  transition: transform 0.3s;
+}
+
+.jump {
+  transform: translateY(-20vh);
+}
+
+/* Enemy */
+.yoni {
+  position: absolute;
+  bottom: 17vh;
+  width: 12vw;
+  animation: move 2.5s linear infinite;
+}
+
+@keyframes move {
+  from { left: 100vw; }
+  to { left: -20vw; }
+}
+</style>
 </head>
-<body style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh; font-family:Arial;">
 
-  <button onclick="handleClick()" 
-          style="padding:20px 40px; font-size:20px; cursor:pointer; border:none; border-radius:10px;">
-    Change Color & Save Click
-  </button>
+<body>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+<div class="title">Ayzosh Gelete</div>
+<div id="counter">0</div>
 
-    async function handleClick() {
-      try {
-        const response = await fetch('/api/save');
-        const data = await response.json();
+<img src="ch3.png" class="character" id="character">
+<img src="ch2.png" class="yoni" id="yoni">
 
-        const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-        document.body.style.backgroundColor = randomColor;
+<div class="ground"></div>
 
-        alert("Total backend clicks: " + data.totalClicks);
-      } catch (error) {
-        alert("Error talking to backend");
-        console.error(error);
-      }
-    }
-  </script>
+<script>
+const character = document.getElementById("character");
+const yoni = document.getElementById("yoni");
+const counter = document.getElementById("counter");
+
+let score = 0;
+let isJumping = false;
+
+function jump() {
+  if (isJumping) return;
+  isJumping = true;
+  character.classList.add("jump");
+
+  setTimeout(() => {
+    character.classList.remove("jump");
+    isJumping = false;
+  }, 400);
+}
+
+document.addEventListener("click", jump);
+document.addEventListener("touchstart", jump);
+
+setInterval(() => {
+  const rect1 = character.getBoundingClientRect();
+  const rect2 = yoni.getBoundingClientRect();
+
+  // Collision detection
+  if (
+    rect1.left < rect2.right &&
+    rect1.right > rect2.left &&
+    rect1.top < rect2.bottom &&
+    rect1.bottom > rect2.top
+  ) {
+    score = 0;
+    counter.innerHTML = score;
+  }
+
+  // Score increase when enemy passes player
+  if (rect2.right < rect1.left && !yoni.passed) {
+    score++;
+    counter.innerHTML = score;
+    yoni.passed = true;
+  }
+
+  if (rect2.left > window.innerWidth - 10) {
+    yoni.passed = false;
+  }
+
+}, 50);
+</script>
 
 </body>
 </html>
